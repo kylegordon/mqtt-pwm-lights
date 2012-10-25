@@ -14,6 +14,7 @@ import socket
 
 import mosquitto
 import ConfigParser
+import subprocess
 
 # Read the config file
 config = ConfigParser.RawConfigParser()
@@ -25,6 +26,7 @@ LOGFILE = config.get("global", "logfile")
 MQTT_HOST = config.get("global", "mqtt_host")
 MQTT_PORT = config.getint("global", "mqtt_port")
 MQTT_TOPIC = config.get("global", "mqtt_topic")
+PIN = config.getint("global", "pin")
 
 client_id = "PWM_Lights_%d" % os.getpid()
 mqttc = mosquitto.Mosquitto(client_id)
@@ -91,6 +93,8 @@ def on_message(msg):
     What to do when the client recieves a message from the broker
     """
     logging.debug("Received: %s", msg.topic)
+    if msg.topic == "/bishopbriggs/gordonhouse/kitchen/undercabinetlights":
+        set_pwm_value(msg.payload)
     
 
 def get_pwm_value():
@@ -102,7 +106,7 @@ def get_pwm_value():
     pwm_value = statefile.readline()
     statefile.close()
 
-def set_pwm_value():
+def set_pwm_value(pwm_value):
     """
     Set the PWM value
     """
@@ -110,7 +114,7 @@ def set_pwm_value():
     statefile = open('/tmp/pwmstatefile', 'w')
     statefile.write(pwm_value)
     statefile.close()
-    subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN), shell=True)
+    subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN) + " " + pwm_value, shell=True)
 
 
 def main_loop():
