@@ -94,23 +94,40 @@ def on_message(msg):
     """
     logging.debug("Received: %s", msg.topic)
     if msg.topic == "/bishopbriggs/gordonhouse/kitchen/undercabinetlights":
-        set_pwm_value(msg.payload)
+        ## FIXME Check payload to ensure it's an integer
+        target_pwm = int(msg.payload)
+        pwm_value = get_pwm_value()
+        while target_pwm != pwm_value:
+          if target_pwm < pwm_value:
+            pwm_value = pwm_value - 5
+            print "Decrementing " + str(pwm_value)
+            #set_pwm_value(temp_pwm)
+            subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value), shell=True)
+          if target_pwm > pwm_value:
+            pwm_value = pwm_value + 5
+            print "Incrementing " + str(pwm_value)
+            #set_pwm_value(temp_pwm)
+            subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value), shell=True)
+          #set_pwm_value(target_pwm)
     
 
 def get_pwm_value():
     """
     Read the PWM value from the system
     """
-    logging.debug("Reading PWM value of %s", str(PIN))
+    # FIXME Make it gracefully handle empty files
+    logging.debug("Reading PWM value of pin %s", str(PIN))
     statefile = open('/tmp/pwmstatefile', 'r')
-    pwm_value = statefile.readline()
+    pwm_value = int(statefile.readline())
+    logging.debug("Stored PWM value is %s", str(pwm_value))
     statefile.close()
+    return pwm_value
 
 def set_pwm_value(pwm_value):
     """
     Set the PWM value
     """
-    logging.debug("Setting PWM value of %s", str(PIN))
+    logging.debug("Setting PWM value of pin %s", str(PIN))
     statefile = open('/tmp/pwmstatefile', 'w')
     statefile.write(pwm_value)
     statefile.close()
