@@ -97,7 +97,7 @@ def get_pwm_value():
     """
     Read the PWM value from the system
     """
-    logging.debug("Reading PWM value of %s"), str(PIN))
+    logging.debug("Reading PWM value of %s", str(PIN))
     statefile = open('/tmp/pwmstatefile', 'r')
     pwm_value = statefile.readline()
     statefile.close()
@@ -106,7 +106,7 @@ def set_pwm_value():
     """
     Set the PWM value
     """
-    logging.debug("Setting PWM value of %s"), str(PIN))
+    logging.debug("Setting PWM value of %s", str(PIN))
     statefile = open('/tmp/pwmstatefile', 'w')
     statefile.write(pwm_value)
     statefile.close()
