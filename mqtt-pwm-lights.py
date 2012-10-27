@@ -97,19 +97,23 @@ def on_message(msg):
         ## FIXME Check payload to ensure it's an integer
         target_pwm = int(msg.payload)
         pwm_value = get_pwm_value()
-        while target_pwm != pwm_value:
+	while target_pwm != pwm_value:
+          logging.info("target_pwm is : %s, pwm_value is : %s", str(target_pwm), str(pwm_value))
           if target_pwm < pwm_value:
             pwm_value = pwm_value - 5
-            print "Decrementing " + str(pwm_value)
-            #set_pwm_value(temp_pwm)
+            if target_pwm > pwm_value - 5:
+              pwm_value = target_pwm
+              time.sleep(1)
+              set_pwm_value(pwm_value)
             subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value), shell=True)
           if target_pwm > pwm_value:
             pwm_value = pwm_value + 5
-            print "Incrementing " + str(pwm_value)
-            #set_pwm_value(temp_pwm)
+	    if target_pwm < pwm_value + 5:
+              pwm_value = target_pwm
+              time.sleep(1)
+              set_pwm_value(pwm_value)
             subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value), shell=True)
-          #set_pwm_value(target_pwm)
-    
+	logging.info("Finished - target_pwm is : %s, pwm_value is : %s", str(target_pwm), str(pwm_value))
 
 def get_pwm_value():
     """
@@ -129,9 +133,9 @@ def set_pwm_value(pwm_value):
     """
     logging.debug("Setting PWM value of pin %s", str(PIN))
     statefile = open('/tmp/pwmstatefile', 'w')
-    statefile.write(pwm_value)
+    statefile.write(str(pwm_value))
     statefile.close()
-    subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN) + " " + pwm_value, shell=True)
+    subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value), shell=True)
 
 
 def main_loop():
