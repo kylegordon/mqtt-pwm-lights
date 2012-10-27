@@ -1,0 +1,16 @@
+SUMMARY
+=======
+
+This script subscribes to a topic defined in /etc/mqtt-pwm-lights/mqtt-pwm-lights.cfg, and adjust the PWM value on the configured pin (18 by defualt) on a Raspberry Pi. It requires the WiringPi library from https://projects.drogon.net/raspberry-pi/wiringpi/ as the gpio command is used to control the PWM values on the GPIO interface. Neither WiringPi SYSFS exporting or RPi.GPIO (Python library) support PWM at this point in time.
+
+INSTALL
+=======
+
+mkdir /usr/local/mqtt-pwm-lights/ /etc/mqtt-pwm-lights/
+cd /usr/local/
+git clone git://github.com/kylegordon/mqtt-pwm-lights.git
+cp mqtt-pwm-lights.cfg.example /etc/mqtt-pwm-lights/mqtt-pwm-lights.cfg
+cp mqtt-pwm-lights.init /etc/init.d/mqtt-pwm-lights
+update-rc.d mqtt-pwm-lights defaults
+cp mqtt-pwm-lights.default /etc/default/mqtt-pwm-lights
+/etc/init.d/mqtt-pwm-lights start
