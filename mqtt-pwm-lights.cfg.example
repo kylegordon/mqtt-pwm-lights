@@ -4,4 +4,4 @@ LOGFILE = /var/log/mqtt-pwm-lights.log
 PIN = 18
 MQTT_HOST = 10.8.0.1
 MQTT_PORT = 1883
-MQTT_TOPIC = /bishopbriggs/gordonhouse/kitchen/undercabinetlights
+MQTT_TOPIC = /bishopbriggs/gordonhouse/kitchen/undercabinetlights/#
