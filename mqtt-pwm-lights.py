@@ -63,7 +63,8 @@ def connect():
     mqttc.on_connect = on_connect
     mqttc.on_disconnect = on_disconnect
 
-    mqttc.subscribe(MQTT_TOPIC, 2)
+    # Subscribe to everything within the heirarchy
+    mqttc.subscribe(MQTT_TOPIC + "/#", 2)
 
 def on_connect(result_code):
      """
@@ -95,7 +96,10 @@ def on_message(msg):
     What to do when the client recieves a message from the broker
     """
     logging.debug("Received: %s", msg.topic)
-    if msg.topic == "/bishopbriggs/gordonhouse/kitchen/undercabinetlights":
+    if msg.topic == MQTT_TOPIC + "/state" and msg.payload == "?":
+        logging.info("State requested")
+        mqttc.publish(MQTT_TOPIC + "/state", str(get_pwm_value()))
+    if msg.topic == MQTT_TOPIC + "/level":
         ## FIXME Check payload to ensure it's an integer
         target_pwm = int(msg.payload)
         pwm_value = get_pwm_value()
@@ -116,6 +120,7 @@ def on_message(msg):
               set_pwm_value(pwm_value)
             subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value), shell=True)
 	logging.info("Finished - target_pwm is : %s, pwm_value is : %s", str(target_pwm), str(pwm_value))
+	mqttc.publish(MQTT_TOPIC + "/state", str(pwm_value))
 
 def get_pwm_value():
     """
