@@ -111,14 +111,18 @@ def on_message(msg):
               pwm_value = target_pwm
               time.sleep(1)
               set_pwm_value(pwm_value)
-            subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value), shell=True)
+            command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
+            logging.debug("Executing : %s", command)
+            subprocess.check_output(command, shell=True)
           if target_pwm > pwm_value:
             pwm_value = pwm_value + 5
 	    if target_pwm < pwm_value + 5:
               pwm_value = target_pwm
               time.sleep(1)
               set_pwm_value(pwm_value)
-            subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value), shell=True)
+            command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
+            logging.debug("Executing : %s", command)
+            subprocess.check_output(command, shell=True)
 	logging.info("Finished - target_pwm is : %s, pwm_value is : %s", str(target_pwm), str(pwm_value))
 	mqttc.publish(MQTT_TOPIC + "/state", str(pwm_value))
 
@@ -142,7 +146,9 @@ def set_pwm_value(pwm_value):
     statefile = open('/tmp/pwmstatefile', 'w')
     statefile.write(str(pwm_value))
     statefile.close()
-    subprocess.check_output("/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value), shell=True)
+    command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
+    logging.debug("Executing : %s", command)
+    subprocess.check_output(command, shell=True)
 
 
 def main_loop():
