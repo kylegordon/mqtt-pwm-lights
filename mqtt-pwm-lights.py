@@ -130,12 +130,20 @@ def get_pwm_value():
     """
     Read the PWM value from the system
     """
-    # FIXME Make it gracefully handle empty files
     logging.debug("Reading PWM value of pin %s", str(PIN))
-    statefile = open('/tmp/pwmstatefile', 'r')
-    pwm_value = int(statefile.readline())
-    logging.debug("Stored PWM value is %s", str(pwm_value))
-    statefile.close()
+    try:
+      statefile = open('/tmp/pwmstatefile', 'r')
+      pwm_value = int(statefile.readline())
+      logging.debug("Stored PWM value is %s", str(pwm_value))
+      statefile.close()
+    except IOError as e:
+      pwm_value = 0
+      statefile = open('/tmp/pwmstatefile', 'w')
+      statefile.write(str(pwm_value))
+      statefile.close()
+    except ValueError:
+      print "Could not convert data to an integer."
+      pwm_value = 0
     return pwm_value
 
 def set_pwm_value(pwm_value):
