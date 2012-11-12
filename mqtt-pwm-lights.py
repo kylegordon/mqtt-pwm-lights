@@ -104,7 +104,7 @@ def on_message(msg):
         target_pwm = int(msg.payload)
         pwm_value = get_pwm_value()
 	while target_pwm != pwm_value:
-          logging.info("target_pwm is : %s, pwm_value is : %s", str(target_pwm), str(pwm_value))
+          logging.debug("target_pwm is : %s, pwm_value is : %s", str(target_pwm), str(pwm_value))
           if target_pwm < pwm_value:
             pwm_value = pwm_value - 5
             if target_pwm > pwm_value - 5:
