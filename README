@@ -17,3 +17,7 @@ update-rc.d mqtt-pwm-lights defaults
 cp /usr/local/mqtt-pwm-lights/mqtt-pwm-lights.default /etc/default/mqtt-pwm-lights
 ## Edit /etc/default/mqtt-pwm-lights and /etc/mqtt-pwm-lights/mqtt-pwm-lights.cfg to suit
 /etc/init.d/mqtt-pwm-lights start
+
+LICENSE
+=======
+See LICENSE file
