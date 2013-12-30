@@ -72,7 +72,7 @@ def connect():
     # Subscribe to everything within the heirarchy
     mqttc.subscribe(MQTT_TOPIC + "/#", 2)
 
-def on_connect(result_code):
+def on_connect(mosq, obj, result_code):
      """
      Handle connections (or failures) to the broker.
      """
@@ -84,7 +84,7 @@ def on_connect(result_code):
         logging.warning("Something went wrong")
         cleanup()
 
-def on_disconnect(result_code):
+def on_disconnect(mosq, obj, result_code):
      """
      Handle disconnections from the broker
      """
@@ -97,7 +97,7 @@ def on_disconnect(result_code):
         connect()
         main_loop()
 
-def on_message(msg):
+def on_message(mosq, obj, msg):
     """
     What to do when the client recieves a message from the broker
     """
