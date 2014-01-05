@@ -198,28 +198,39 @@ def process_message(msg):
         ## FIXME Check payload to ensure it's an integer
         target_pwm = int(msg.payload)
         pwm_value = get_pwm_value()
-	while target_pwm != pwm_value:
-          logging.debug("target_pwm is : %s, pwm_value is : %s", str(target_pwm), str(pwm_value))
-          if target_pwm < pwm_value:
+    while target_pwm != pwm_value:
+        logging.debug("target_pwm is : %s, pwm_value is : %s",
+                      str(target_pwm),
+                      str(pwm_value))
+        if target_pwm < pwm_value:
             pwm_value = pwm_value - 5
             if target_pwm > pwm_value - 5:
-              pwm_value = target_pwm
-              time.sleep(1)
-              set_pwm_value(pwm_value)
-            command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
+                pwm_value = target_pwm
+                time.sleep(1)
+                set_pwm_value(pwm_value)
+            command = "/usr/local/bin/gpio -g pwm "
+                       + str(PIN)
+                       + " "
+                       + str(pwm_value)
             logging.debug("Executing : %s", command)
             subprocess.check_output(command, shell=True)
-          if target_pwm > pwm_value:
+        if target_pwm > pwm_value:
             pwm_value = pwm_value + 5
-	    if target_pwm < pwm_value + 5:
-              pwm_value = target_pwm
-              time.sleep(1)
-              set_pwm_value(pwm_value)
-            command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
+        if target_pwm < pwm_value + 5:
+            pwm_value = target_pwm
+            time.sleep(1)
+            set_pwm_value(pwm_value)
+            command = "/usr/local/bin/gpio -g pwm "
+                       + str(PIN)
+                       + " "
+                       + str(pwm_value)
             logging.debug("Executing : %s", command)
             subprocess.check_output(command, shell=True)
-	logging.info("Finished - target_pwm is : %s, pwm_value is : %s", str(target_pwm), str(pwm_value))
-	mqttc.publish(MQTT_TOPIC + "/state", str(pwm_value))
+    logging.info("Finished - target_pwm is : %s, pwm_value is : %s",
+                 str(target_pwm),
+                 str(pwm_value))
+    mqttc.publish(MQTT_TOPIC + "/state", str(pwm_value))
+
 
 def get_pwm_value():
     """
@@ -227,19 +238,20 @@ def get_pwm_value():
     """
     logging.debug("Reading PWM value of pin %s", str(PIN))
     try:
-      statefile = open('/tmp/pwmstatefile', 'r')
-      pwm_value = int(statefile.readline())
-      logging.debug("Stored PWM value is %s", str(pwm_value))
-      statefile.close()
+        statefile = open('/tmp/pwmstatefile', 'r')
+        pwm_value = int(statefile.readline())
+        logging.debug("Stored PWM value is %s", str(pwm_value))
+        statefile.close()
     except IOError as e:
-      pwm_value = 0
-      statefile = open('/tmp/pwmstatefile', 'w')
-      statefile.write(str(pwm_value))
-      statefile.close()
+        pwm_value = 0
+        statefile = open('/tmp/pwmstatefile', 'w')
+        statefile.write(str(pwm_value))
+        statefile.close()
     except ValueError:
-      print "Could not convert data to an integer."
-      pwm_value = 0
+        print "Could not convert data to an integer."
+        pwm_value = 0
     return pwm_value
+
 
 def set_pwm_value(pwm_value):
     """
