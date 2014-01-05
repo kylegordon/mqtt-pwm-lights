@@ -208,10 +208,7 @@ def process_message(msg):
                 pwm_value = target_pwm
                 time.sleep(1)
                 set_pwm_value(pwm_value)
-            command = "/usr/local/bin/gpio -g pwm "
-                       + str(PIN)
-                       + " "
-                       + str(pwm_value)
+            command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
             logging.debug("Executing : %s", command)
             subprocess.check_output(command, shell=True)
         if target_pwm > pwm_value:
@@ -220,10 +217,7 @@ def process_message(msg):
             pwm_value = target_pwm
             time.sleep(1)
             set_pwm_value(pwm_value)
-            command = "/usr/local/bin/gpio -g pwm "
-                       + str(PIN)
-                       + " "
-                       + str(pwm_value)
+            command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
             logging.debug("Executing : %s", command)
             subprocess.check_output(command, shell=True)
     logging.info("Finished - target_pwm is : %s, pwm_value is : %s",
