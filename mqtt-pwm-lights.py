@@ -199,7 +199,6 @@ def process_message(msg):
     """
     What to do when the client recieves a message from the broker
     """
-    print "in procesS_message"
     logging.debug("Received: %s", msg.topic)
     if msg.topic == MQTT_TOPIC + "/state" and msg.payload == "?":
         logging.info("State requested")
