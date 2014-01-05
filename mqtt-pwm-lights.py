@@ -186,6 +186,14 @@ def connect():
         mqttc.on_log = on_log
 
 
+def process_connection():
+    """
+    What to do when a new connection is established
+    """
+    logging.debug("Subscribing to %s", MQTT_TOPIC)
+
+
+
 def process_message(msg):
     """
     What to do when the client recieves a message from the broker
