@@ -192,13 +192,14 @@ def process_connection():
     What to do when a new connection is established
     """
     logging.debug("Subscribing to %s", MQTT_TOPIC)
-
+    mqttc.subscribe(MQTT_TOPIC + "/#", 2)
 
 
 def process_message(msg):
     """
     What to do when the client recieves a message from the broker
     """
+    print "in procesS_message"
     logging.debug("Received: %s", msg.topic)
     if msg.topic == MQTT_TOPIC + "/state" and msg.payload == "?":
         logging.info("State requested")
@@ -207,32 +208,32 @@ def process_message(msg):
         ## FIXME Check payload to ensure it's an integer
         target_pwm = int(msg.payload)
         pwm_value = get_pwm_value()
-    while target_pwm != pwm_value:
-        logging.debug("target_pwm is : %s, pwm_value is : %s",
-                      str(target_pwm),
-                      str(pwm_value))
-        if target_pwm < pwm_value:
-            pwm_value = pwm_value - 5
-            if target_pwm > pwm_value - 5:
-                pwm_value = target_pwm
-                time.sleep(1)
-                set_pwm_value(pwm_value)
-            command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
-            logging.debug("Executing : %s", command)
-            subprocess.check_output(command, shell=True)
-        if target_pwm > pwm_value:
-            pwm_value = pwm_value + 5
-        if target_pwm < pwm_value + 5:
-            pwm_value = target_pwm
-            time.sleep(1)
-            set_pwm_value(pwm_value)
-            command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
-            logging.debug("Executing : %s", command)
-            subprocess.check_output(command, shell=True)
-    logging.info("Finished - target_pwm is : %s, pwm_value is : %s",
-                 str(target_pwm),
-                 str(pwm_value))
-    mqttc.publish(MQTT_TOPIC + "/state", str(pwm_value))
+        while target_pwm != pwm_value:
+            logging.debug("target_pwm is : %s, pwm_value is : %s",
+                          str(target_pwm),
+                          str(pwm_value))
+            if target_pwm < pwm_value:
+                pwm_value = pwm_value - 5
+                if target_pwm > pwm_value - 5:
+                    pwm_value = target_pwm
+                    time.sleep(1)
+                    set_pwm_value(pwm_value)
+                command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
+                logging.debug("Executing : %s", command)
+                subprocess.check_output(command, shell=True)
+            if target_pwm > pwm_value:
+                pwm_value = pwm_value + 5
+            	if target_pwm < pwm_value + 5:
+	                pwm_value = target_pwm
+        	        time.sleep(1)
+                	set_pwm_value(pwm_value)
+                command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
+                logging.debug("Executing : %s", command)
+                subprocess.check_output(command, shell=True)
+		logging.info("Finished - target_pwm is : %s, pwm_value is : %s",
+                	 str(target_pwm),
+                	 str(pwm_value))
+		mqttc.publish(MQTT_TOPIC + "/state", str(pwm_value))
 
 
 def get_pwm_value():
