@@ -222,17 +222,17 @@ def process_message(msg):
                 subprocess.check_output(command, shell=True)
             if target_pwm > pwm_value:
                 pwm_value = pwm_value + 5
-            	if target_pwm < pwm_value + 5:
-	                pwm_value = target_pwm
-        	        time.sleep(1)
-                	set_pwm_value(pwm_value)
+                if target_pwm < pwm_value + 5:
+                    pwm_value = target_pwm
+                    time.sleep(1)
+                    set_pwm_value(pwm_value)
                 command = "/usr/local/bin/gpio -g pwm " + str(PIN) + " " + str(pwm_value)
                 logging.debug("Executing : %s", command)
                 subprocess.check_output(command, shell=True)
-		logging.info("Finished - target_pwm is : %s, pwm_value is : %s",
-                	 str(target_pwm),
-                	 str(pwm_value))
-		mqttc.publish(MQTT_TOPIC + "/state", str(pwm_value))
+            logging.info("Finished - target_pwm is : %s, pwm_value is : %s",
+                     str(target_pwm),
+                     str(pwm_value))
+        mqttc.publish(MQTT_TOPIC + "/state", str(pwm_value))
 
 
 def get_pwm_value():
