@@ -8,6 +8,13 @@ When any change to the lighting level is required, it will ramp up or down to th
 INSTALL
 =======
 
+# This needs automated and/or packaged up
+
+sudo echo "deb http://repo.mosquitto.org/debian wheezy main" > /etc/apt/sources.list.d/mosquitto-wheezy.list
+wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key -O /tmp/mosquitto-repo.gpg.key
+sudo apt-key add /tmp/mosquitto-repo.gpg.key
+sudo apt-get update
+
 sudo apt-get install python-mosquitto git
 mkdir /etc/mqtt-pwm-lights/
 git clone git://github.com/kylegordon/mqtt-pwm-lights.git /usr/local/mqtt-pwm-lights/
